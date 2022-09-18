@@ -12,8 +12,13 @@ const DRI = (props) => {
 
   const ScreenOne = () => {
     return <div>
-      <p>Screen One</p>
+      <form style={{marginBottom: 35}}>
+    <label>
+    <input type="text" name="name" placeholder="Firmenname"/>
+      </label>
+        </form>
       <Button onClick={() => setScreen(2)} text="Weiter" type="primary" />
+      <p style={{color:'grey'}}>Wenn sie auf </p> <p style={{color:'#444444'}}>WEITER</p> <p style={{color:'grey'}}> klicken, akzeptieren sie die </p> <a href="/abgs"style={{color:'#2BAFE5'}}>AGB</a>
     </div>
   }
 

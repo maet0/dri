@@ -13,6 +13,17 @@ body {
   font-family: 'Avenir Roman';
 }
 
+::placeholder {
+  color: #2BAFE5;
+  opacity: 1; 
+}
+
+input[type=text] {
+  width: 300%;
+  border: none;
+  border-bottom: 2px solid black;
+}
+
 img {
   max-width: 100%;
   height: auto;
