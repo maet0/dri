@@ -1,0 +1,61 @@
+.buttonWrapper {
+    min-width: 180px;
+    display: inline-flex;
+    font-family: 'Avenir Black';
+
+    @media only screen and (max-width: 992px) {
+        max-width: 490px;
+        margin: 0 auto;
+    }
+}
+
+.button {
+    display: inline-flex;
+    align-items: center;
+    cursor: pointer;
+    justify-content: center !important;
+    text-decoration: none;
+
+    &:hover {
+        text-decoration: none;
+    }
+
+    &.primary {
+        width: 100%;
+        background: #2bafe5;
+        height: 35px;
+        transition: all 200ms ease-out;
+        border-radius: 0px 12px 0px 12px;
+        border: 3px solid #2bafe5;
+        &>p {
+            color: white;
+            text-align: left;
+        }
+
+        &:hover {
+            & > p { color: #2bafe5; }
+            background: white;
+        }
+    }
+
+    &.secondary {
+        width: 100%;
+        background: white;
+        height: 35px;
+        transition: all 200ms ease-out;
+        border-radius: 0px 12px 0px 12px;
+        border: 3px solid #2bafe5;
+        &>p {
+            color: #2bafe5;
+            text-align: left;
+        }
+
+        &:hover {
+            & > p { color: white; }
+            background: #2bafe5;
+        }
+    }
+
+    
+
+}
