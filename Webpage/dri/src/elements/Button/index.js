@@ -1,5 +1,6 @@
 import React from "react";
-import * as styles from "./button.module.scss";
+import styles from "./index.module.scss";
+import {Link} from "react-router-dom";
 
 const Button = (props) => {
   let addStyle = [];
@@ -11,10 +12,7 @@ const Button = (props) => {
       ? styles.primary
       : props.type === "secondary"
       ? styles.secondary
-      : props.type === "tertiary"
-      ? styles.tertiary
       : "",
-      hasImage || styles.centered
   ].join(" ");
 
   if (props.onClick !== undefined) {
@@ -26,14 +24,13 @@ const Button = (props) => {
           className={buttonStyles}
           style={addStyle}
         >
-          {hasImage && <img src={props.image} alt="" />}
           <p>{props.text}</p>
         </button>
       </div>
     );
   }
 
-  if (props.destination !== undefined && props.destination.startsWith("/")) {
+  if (props.destination !== undefined) {
     return (
       <div className={styles.buttonWrapper}>
         <Link
@@ -42,7 +39,6 @@ const Button = (props) => {
           className={buttonStyles}
           style={addStyle}
         >
-          {hasImage && <img src={props.image} alt="" />}
           <p>{props.text}</p>
         </Link>
       </div>
@@ -52,7 +48,6 @@ const Button = (props) => {
   return (
     <div className={styles.buttonWrapper}>
       <button className={buttonStyles} styles={addStyle}>
-        {hasImage && <img src={props.image} alt="" />}
         <p>{props.text}</p>
       </button>
     </div>

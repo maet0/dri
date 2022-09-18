@@ -1,5 +1,6 @@
 import React from "react";
 import Nav from "../elements/Nav";
+import Footer from "../elements/Footer"
 import '../style/main.scss';
 
 const Layout = (props) => {
@@ -10,6 +11,7 @@ const Layout = (props) => {
             <div className="content">
                 {props.children}
             </div>
+            <Footer path={props.path}/>
         </>
     )
 
