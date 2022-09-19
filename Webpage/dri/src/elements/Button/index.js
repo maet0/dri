@@ -1,6 +1,6 @@
 import React from "react";
 import styles from "./index.module.scss";
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const Button = (props) => {
   let addStyle = [];
@@ -11,10 +11,10 @@ const Button = (props) => {
     props.type === "primary"
       ? styles.primary
       : props.type === "secondary"
-      ? styles.secondary
-      : props.type === "tertiary"
-      ? styles.tertiary
-      : "",
+        ? styles.secondary
+        : props.type === "tertiary"
+          ? styles.tertiary
+          : "",
   ].join(" ");
 
   if (props.onClick !== undefined) {
@@ -33,6 +33,21 @@ const Button = (props) => {
   }
 
   if (props.destination !== undefined) {
+    if (props.destination.startsWith('http') || props.destination.startsWith('www')) {
+      return (
+        <div className={styles.buttonWrapper}>
+          <a
+            href={props.destination}
+            className={buttonStyles}
+            style={addStyle}
+            referrerPolicy="no-referrer"
+            target={'_blank'}
+          >
+            <p>{props.text}</p>
+          </a>
+        </div>
+      )
+    }
     return (
       <div className={styles.buttonWrapper}>
         <Link

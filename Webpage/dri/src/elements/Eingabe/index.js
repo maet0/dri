@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import styles from "./index.module.scss";
 
 
@@ -20,6 +20,7 @@ const Eingabe = (props) => {
 
   const handleFocus = () => {
     setHideLabel(true)
+    props.onFocus()
   }
 
   const handleBlur = () => {
@@ -27,7 +28,7 @@ const Eingabe = (props) => {
   }
 
   return (
-    <div className={`${styles.wrapper} ${hideLabel ? styles.focus : undefined}`} onFocus={() => handleFocus()} onBlur={() => handleBlur()}>
+    <div className={`${styles.wrapper} ${hideLabel ? styles.focus : undefined} ${props.inline ? styles.inline : undefined}`} onFocus={() => handleFocus()} onBlur={() => handleBlur()}>
       <label htmlFor={label_id}>
         {label}
       </label>

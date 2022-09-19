@@ -13,9 +13,8 @@ body {
   font-family: 'Avenir Roman';
 }
 
-::placeholder {
-  color: #2BAFE5;
-  opacity: 1;
+b {
+  font-family: 'Avenir Black';
 }
 
 img {
@@ -27,6 +26,16 @@ img {
 a {
   color: #1C1C1C;
   text-decoration: none;
+}
+
+button {
+  background: none;
+  color: inherit;
+  border: none;
+  padding: 0;
+  font: inherit;
+  cursor: pointer;
+  outline: inherit;
 }
 
 h1,
@@ -173,4 +182,14 @@ body {
   &:not(:last-child) {
     margin-right: 16px;
   }
+}
+
+/* Speedometer CSS adjustments */
+
+.speedometer .current-value {
+  transform: translateY(20px);
+}
+
+.speedometer .pointer {
+  fill: #1c1c1c !important;
 }

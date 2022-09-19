@@ -1,6 +1,7 @@
 .wrapper {
     width: 100%;
     position: relative;
+    margin-top: 15px;
 
     input {
         width: 100%;
@@ -32,6 +33,11 @@
         label {
             font-size: 10px;
             top: 0;
+            color:#1C1C1C;
         }
+    }
+
+    &.inline {
+        width: 45%;
     }
 }
