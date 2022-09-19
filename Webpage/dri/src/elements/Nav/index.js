@@ -1,12 +1,13 @@
 import React from "react";
 import styles from './index.module.scss'
 import SpectoryLogoAnimated from '../SpectoryLogoAnimated';
+import { Link } from "react-router-dom";
 
 const Nav = (props) => {
 
     return (
         <div className={styles.wrapper}>
-            	<h1 className='white'>DIGITAL RECRUITING INDEX</h1>
+            	<Link className={props.path === "/" ? styles.active : undefined} to="/"><h1 className='white'>DIGITAL RECRUITING INDEX</h1></Link>
                 <SpectoryLogoAnimated />
         </div>
     );

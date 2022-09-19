@@ -12,6 +12,8 @@ const Button = (props) => {
       ? styles.primary
       : props.type === "secondary"
       ? styles.secondary
+      : props.type === "tertiary"
+      ? styles.tertiary
       : "",
   ].join(" ");
 

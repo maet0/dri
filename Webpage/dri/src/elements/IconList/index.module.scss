@@ -1,0 +1,30 @@
+.wrapper {
+    display: flex;
+    flex-flow: column nowrap;
+}
+
+.item {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    margin-bottom: 80px;
+
+    & > img {
+        max-width: 160px;
+        height: auto;
+        object-fit: contain;
+        margin-right: 65px;
+    }
+
+    & > div {
+        max-width: 670px;
+
+        h2 {
+            margin-bottom: 20px;
+        }
+    }
+
+    &.right {
+        margin-left: auto;
+    }
+}

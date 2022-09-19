@@ -6,7 +6,7 @@ const Footer = (props) => {
   return (
     <div className={styles.footer}>
       <p>© 2022 spectory. All Rights Reserved.</p>
-      <p><Link to="/datenschutz">Datenschutz</Link>—<Link to="/agb">AGB</Link>—<Link to="/impressum">Impressum</Link></p>
+      <p><Link className={props.path === '/datenschutz' ? styles.bold : undefined} to="/datenschutz">Datenschutz</Link>—<Link className={props.path === '/agb' ? styles.bold : undefined} to="/agb">AGB</Link>—<Link className={props.path === '/impressum' ? styles.bold : undefined} to="/impressum">Impressum</Link></p>
     </div>
   );
 };

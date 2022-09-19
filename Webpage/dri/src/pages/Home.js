@@ -3,6 +3,8 @@ import Button from '../elements/Button';
 import Layout from './layout';
 import FirstImage from '../assets/images/Laptop.png'
 import DRI from '../elements/DRI';
+import IconList from '../elements/IconList';
+import Calendly from '../elements/Calendly';
 
 const Home = () => (
   <Layout path="/">
@@ -17,21 +19,21 @@ const Home = () => (
       <div className='col2'></div>
     </div>
 
-    <div className='container' style={{marginBottom: 50}}>
-      <div className='col12' style={{textAlign: 'center'}}>
+    <div className='container' style={{ marginBottom: 50 }}>
+      <div className='col12' style={{ textAlign: 'center' }}>
         <h1>Jetzt einfach und kostenlos Ihren DRI berechnen!</h1>
       </div>
     </div>
 
-    <div className='container' style={{marginBottom: 150}}>
+    <div className='container' style={{ marginBottom: 150 }}>
       <div className='col2'></div>
-      <div className='col8'>
+      <div className='col8' id='anwendung'>
         <DRI />
       </div>
       <div className='col2'></div>
     </div>
 
-    <div className='container '>
+    <div className='container' style={{ marginBottom: 180 }}>
       <div className='col5'>
         <h2 style={{ marginBottom: 30 }}>Was ist der Digital Recruiting Index?</h2>
         <p style={{ marginBottom: 35 }}>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce vulputate massa vitae tortor ullamcorper, at porttitor arcu pellentesque. Nulla sit amet enim tellus. Suspendisse commodo ultrices nulla, vel luctus libero gravida non. Vivamus vulputate enim et neque consequat, sed malesuada tortor ullamcorper. Proin dapibus odio sed lacinia ornare. Vestibulum non consequat purus. Integer consequat hendrerit pulvinar. Ut efficitur quis sem vel tincidunt.<br /><br />
@@ -47,6 +49,22 @@ const Home = () => (
       </div>
     </div>
 
+    <div className='container' style={{marginBottom: 90}}>
+      <div className='col12' style={{ textAlign: 'center' }}>
+        <h1>Das macht ein Unternehmen mit einem guten Digital Recruiting aus:</h1>
+      </div>
+    </div>
+    <div className='container'>
+      <div className='col10' style={{margin: '0 auto'}}>
+        <IconList />
+      </div>
+    </div>
+
+    <div className='container'>
+      <div className='col12'>
+        <Calendly />
+      </div>
+    </div>
   </Layout>
 )
 

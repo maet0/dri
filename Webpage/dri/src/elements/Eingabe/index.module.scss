@@ -1,0 +1,37 @@
+.wrapper {
+    width: 100%;
+    position: relative;
+
+    input {
+        width: 100%;
+        border: none;
+        border-bottom: 2px solid #1C1C1C;
+        height: 50px;
+        padding-left: 10px;
+        font-size: 16px;
+        font-family: 'Avenir Black';
+        color: #2BAFE5;
+
+        &:focus {
+            outline: none;
+        }
+    }
+
+    label {
+        position: absolute;
+        left: 10px;
+        top: 50%;
+        transform:translateY(-50%);
+        font-size: 16px;
+        color: #2BAFE5;
+        font-family: 'Avenir Black';
+        transition: all 250ms ease;
+    }
+
+    &.focus {
+        label {
+            font-size: 10px;
+            top: 0;
+        }
+    }
+}
