@@ -74,6 +74,23 @@ h1.white {
   color: white;
 }
 
+@media screen and (max-width: 992px) {
+  h1 {
+    font-size: 20px;
+    line-height: 35px;
+  }
+
+  h2 {
+     font-size: 18px;
+     line-height: 30px;
+  }
+
+  p {
+    font-size: 13px;
+    line-height: 20px;
+  }
+}
+
 * {
   box-sizing: border-box;
   text-rendering: optimizeLegibility;

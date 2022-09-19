@@ -3,6 +3,7 @@
     width: 100%;
     padding: 70px 0px 30px 140px;
     margin-top: 200px;
+
     a {
         margin-right: 30px;
 
@@ -15,4 +16,28 @@
 .bold {
     font-family: 'Avenir Black';
     cursor: default;
+}
+
+.onlyMobile {
+    display: none;
+}
+
+@media only screen and (max-width: 992px) {
+
+    .onlyMobile {
+        display: block;
+    }
+
+    .onlyDesktop {
+        display: none;
+    }
+
+    .footer {
+        margin-top: 50px;
+        padding: 30px 15px 30px 15px;
+
+        a {
+            margin-left: 0 !important;
+        }
+    }
 }

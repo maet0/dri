@@ -28,3 +28,16 @@
         margin-left: auto;
     }
 }
+
+@media only screen and (max-width: 992px) {
+    .item {
+        flex-flow: column nowrap;
+        text-align: center;
+
+        & > img {
+            max-width: 80px;
+            margin-right: 0;
+            margin-bottom: 20px;
+        }
+    }
+}

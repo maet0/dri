@@ -1,13 +1,31 @@
 @keyframes handmade_logo {
-        to { background-position-y: -5290px; }
+    to {
+        background-position-y: -5290px;
     }
+}
 
+.logo {
+    width: 250px;
+    height: 35px;
+    background: url(./sprite_sheet.png) -10px -10px;
+}
+
+.logo.activated {
+    animation: handmade_logo 3s steps(96) forwards;
+}
+
+@media only screen and (max-width: 992px) {
     .logo {
-        width: 250px;
+        width: 150px;
         height: 35px;
-        background: url(./sprite_sheet.png) -10px -10px;
+        background: url(./static_logo.png);
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+        
     }
 
-    .logo.activated {
-        animation: handmade_logo 3s steps(96) forwards;
+    .logo.logo.activated {
+        animation: none;
     }
+}

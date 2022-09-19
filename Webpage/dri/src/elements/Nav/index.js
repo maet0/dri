@@ -7,8 +7,10 @@ const Nav = (props) => {
 
     return (
         <div className={styles.wrapper}>
-            	<Link className={props.path === "/" ? styles.active : undefined} to="/"><h1 className='white'>DIGITAL RECRUITING INDEX</h1></Link>
-                <SpectoryLogoAnimated />
+            <Link className={`${props.path === "/" ? styles.active : undefined} ${styles.onlyDesktop}`} to="/"><h1 className='white'>DIGITAL RECRUITING INDEX</h1></Link>
+            <Link className={`${props.path === "/" ? styles.active : undefined} ${styles.onlyMobile}`} to="/"><h1 className='white'>DRI</h1></Link>
+
+            <SpectoryLogoAnimated />
         </div>
     );
 

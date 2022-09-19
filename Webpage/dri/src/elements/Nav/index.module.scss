@@ -9,8 +9,26 @@
     align-items: center;
     justify-content: space-between;
     margin-bottom: 100px;
+
+    @media only screen and (max-width: 992px) {
+        margin-bottom: 50px;
+    }
 }
 
 .active {
     cursor: default;
+}
+
+.onlyMobile {
+    display: none;
+}
+
+@media only screen and (max-width: 992px) {
+    .onlyMobile {
+        display: block;
+    }
+
+    .onlyDesktop {
+        display: none;
+    }
 }
