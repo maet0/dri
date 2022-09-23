@@ -12,7 +12,7 @@ const SpectoryLogoAnimated = props => {
     }
 
     return (
-        <a lassName={styles.wrapper}onMouseEnter={newHovered} target="_blank" rel="noreferrer" href="https://www.spectory.at">
+        <a className={styles.wrapper} onMouseEnter={newHovered} target="_blank" rel="noreferrer" href="https://www.spectory.at">
             <div className={`${styles.logo} ${hovered && styles.activated}`}></div>
         </a>
     )

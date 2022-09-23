@@ -3,7 +3,7 @@ import styles from "./index.module.scss";
 import { Link } from "react-router-dom";
 
 const Button = (props) => {
-  let addStyle = [];
+  let addStyle = props.style;
 
   let buttonStyles = [
     props.disabled && styles.disabled,

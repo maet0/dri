@@ -28,13 +28,17 @@
         transition: all 200ms ease-out;
         border-radius: 0px 12px 0px 12px;
         border: 3px solid #2bafe5;
+
         &>p {
             color: white;
             text-align: left;
         }
 
         &:hover {
-            & > p { color: #2bafe5; }
+            &>p {
+                color: #2bafe5;
+            }
+
             background: white;
         }
     }
@@ -46,19 +50,24 @@
         transition: all 200ms ease-out;
         border-radius: 0px 12px 0px 12px;
         border: 3px solid #2bafe5;
+
         &>p {
             color: #2bafe5;
             text-align: left;
         }
 
         &:hover {
-            & > p { color: white; }
+            &>p {
+                color: white;
+            }
+
             background: #2bafe5;
         }
     }
 
     &.tertiary {
         position: relative;
+
         &::before {
             display: block;
             content: "—";
@@ -73,6 +82,10 @@
         }
     }
 
-    
 
+
+}
+
+@media only screen and (max-width: 992px) {
+    
 }

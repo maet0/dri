@@ -11,7 +11,7 @@ const Layout = (props) => {
             <div className="content">
                 {props.children}
             </div>
-            <Footer path={props.path}/>
+            <Footer path={props.path} />
         </>
     )
 

@@ -6,6 +6,7 @@ import Eingabe from "../Eingabe";
 import Logo from '../../assets/images/placeholder.png'
 import { Puff } from 'react-loader-spinner'
 import ReactSpeedometer, { CustomSegmentLabelPosition } from "react-d3-speedometer"
+import useWindowDimensions, { mobile_breakpoint } from "../../helpers/WindowService"
 
 
 
@@ -43,6 +44,8 @@ const DRI = (props) => {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [score, setScore] = useState(0);
+  const { width } = useWindowDimensions()
+
 
 
   const prepareSecondScreen = () => {
@@ -116,7 +119,7 @@ const DRI = (props) => {
               </div>
               <p>Wir würden uns freuen, wenn Sie uns Ihre Kontaktdaten hinterlassen.
                 Falls Sie nicht wünschen, im Rahmen eines möglichen Beratungsgespräches kontaktiert zu werden, drücken Sie auf <span style={{ fontFamily: 'Avenir Black' }}>Überspringen</span>.</p>
-              <div style={{ width: '80%', marginRight: 'auto', marginTop: '50px' }}>
+              <div style={{ width: '80%', marginRight: 'auto', marginTop: width > mobile_breakpoint ? 50 : 10 }}>
                 <div style={{ display: 'flex', width: '100%', justifyContent: 'space-between' }}>
                   <Eingabe inline label="Vorname" value={surname} onChange={setSurname} />
                   <Eingabe inline label="Nachname" value={name} onChange={setName} />
@@ -125,7 +128,7 @@ const DRI = (props) => {
                 <Eingabe label="Telefonnummer" value={phone} onChange={setPhone} />
               </div>
               <div className={styles.buttonbar}>
-                <Button onClick={sendData} text="Kontaktdaten senden und DRI berechnen" type="primary" />
+                <Button style={{marginBottom: width < mobile_breakpoint ? 15 : 0}} onClick={sendData} text="Kontaktdaten senden" type="primary" />
                 <Button onClick={getResults} text="Überspringen" type="secondary" />
               </div>
             </div>
@@ -145,7 +148,7 @@ const DRI = (props) => {
                 />
               </div>
               : screen === 5 ?
-                <div>
+                <div style={{paddingTop: width < mobile_breakpoint ? 30 : 0}}>
                   <ReactSpeedometer
                     maxValue={100}
                     customSegmentLabels={outcomes}
@@ -160,9 +163,9 @@ const DRI = (props) => {
                     Wenn Sie Interesse am Ausbau dieser Bereiche haben, laden wir Sie gerne auf ein Beratungsgespräch ein.<br /><br />
                     Wir haben eine PDF mit genaueren Ergebnissen für Sie erstellt. Wenn Sie diese sehen möchten, drücken Sie auf den untenstehenden Button.</p>
                   <div className={styles.buttonbar}>
-                    <Button text="Ergebnis PDF herunterladen" type="primary" onClick={() => alert('code download here')} />
-                    <Button text="Gespräch vereinbaren" type="secondary" destination="#calendly"/>
-                    <Button text="spectory Homepage" type="secondary" destination="https://www.spectory.at" />
+                    <Button style={{marginBottom: width < mobile_breakpoint ? 15 : 0}} text="Ergebnis PDF herunterladen" type="primary" onClick={() => alert('code download here')} />
+                    <Button style={{marginBottom: width < mobile_breakpoint ? 15 : 0}} text="Gespräch vereinbaren" type="secondary" destination="#calendly" />
+                    <Button style={{marginBottom: width < mobile_breakpoint ? 25 : 0}} text="spectory Homepage" type="secondary" destination="https://www.spectory.at" />
                   </div>
                 </div>
                 : ""
