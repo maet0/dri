@@ -1,38 +1,34 @@
-const { Scraper, Root, DownloadContent, OpenLinks, CollectContent } = require('nodejs-web-scraper');
-const fs = require('fs');
+const PORT = 8000 
+const axios = require('axios') 
+const cheerio = require('cheerio') 
+const express = require('express') 
+const app = express() 
+const cors = require('cors') 
 
-(async () => {
+app.use(cors()) 
 
-    const config = {
-        baseSiteUrl: `https://www.karriere.at`,
-        startUrl: `https://www.karriere.at/jobs/bmw/linz`,
-        removeStyleAndScriptTags: false //Telling the scraper NOT to remove style and script tags, needed for Insight Tags / Trackers etc.      
-    }
+app.get('/', function (req, res) { 
+    res.json('This is my webscraper') 
+}) 
 
-    let directoryExists;
+app.get('/results', (req, res) => {
+    let querytext = req.query?.text; 
+    const url = `https://firmen.wko.at/${querytext}` 
+    console.log(req.query.text) 
+    axios(url).then(response => {
+        const html = response.data 
+        const $ = cheerio.load(html) 
+        let companies = [] 
+        $('article', html).each(function () { //<-- cannot be a function expression
+            const title = $(this).find('h3').text() 
+            const street = $(this).find('.street').text() 
+            const zip = $(this).find('.zip').text() 
+            const city = $(this).find('.locality').text() 
+            const url = $(this).find('a').attr('href') 
+            companies.push({ title, street, zip, city, url })
+        }) 
+        res.json(companies)
+    }).catch(err => console.log(err))
+}) 
 
-    const getPageHtml = (html, pageAddress) => {//Saving the HTML file, using the page address as a name.
-        console.log("Requesting data")
-        if(!directoryExists){
-            fs.mkdirSync('./html');
-            directoryExists = true;
-            console.log("Directory Created")
-        }
-        const name = sanitize(pageAddress)
-        fs.writeFile(`./html/${name}.html`, html, () => { })
-        console.log("File created!")
-    }
-
-    const scraper = new Scraper(config);
-
-    const root = new Root({ pagination: { queryString: 'page_num', begin: 1, end: 100 } });
-
-    const jobAds = new OpenLinks('.m-jobsListItem__dataContainer h2 a', { getPageHtml });//Opens every job ad, and calls a hook after every page is done.
-
-    root.addOperation(jobAds);
-
-    await scraper.scrape(root);
-}
-
-);
-
+app.listen(PORT, () => console.log(`server running on PORT ${PORT}`))
