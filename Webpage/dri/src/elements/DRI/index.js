@@ -7,11 +7,17 @@ import Logo from '../../assets/images/placeholder.png'
 import { Puff } from 'react-loader-spinner'
 import ReactSpeedometer, { CustomSegmentLabelPosition } from "react-d3-speedometer"
 import useWindowDimensions, { mobile_breakpoint } from "../../helpers/WindowService"
-
+import axios from "axios"
 
 
 
 const DRI = (props) => {
+
+
+  function getCompanies(){
+    axios.get(`http://localhost:8000/results?text=${enteredName}`)
+  .then(response => setCompanies(response));
+}
 
   // Values for the speedometer
   const outcomes = [
@@ -36,6 +42,7 @@ const DRI = (props) => {
   ];
 
   const [enteredName, setEnteredName] = useState("");
+  const [companies, setCompanies] = useState("");
   const [screen, setScreen] = useState(1);
   const [remainingSuggestions, setRemainingSuggestions] = useState(0);
   const [previousSuggestions, setPreviousSuggestions] = useState(0);
@@ -83,7 +90,7 @@ const DRI = (props) => {
         <div>
           <Eingabe label="Firmenname" value={enteredName} onChange={setEnteredName} />
           <div style={{ marginTop: 60, marginBottom: 40 }}>
-            <Button onClick={prepareSecondScreen} text="Weiter" type="primary" />
+            <Button id="clicka" onClick={prepareSecondScreen} text="Weiter" type="primary" />
           </div>
           <p style={{ color: 'grey' }}>Wenn sie auf <span style={{ color: '#444444' }}>WEITER</span> klicken, akzeptieren sie die <a href="/agb" style={{ color: '#2BAFE5' }}>AGB</a></p>
         </div>
