@@ -35,7 +35,7 @@ app.get('/results', (req, res) => {
         $('article', html).each(function () { 
             const title = $(this).find('h3').text() 
             const street = $(this).find('.street').text() 
-            const zip = $(this).find('.zip').text() 
+            const zip = $(this).find('.zip').text()?.split(' ')[0] 
             const city = $(this).find('.locality').text() 
             const url = $(this).find('a').attr('href')
             const website = $(this).find('[itemprop=url]').text()
