@@ -16,13 +16,13 @@ app.get('/', function (req, res) {
 }) 
 
 app.get('/getDRI', function (req, res) { 
-    const compdata = [req]
+    var compdata
     const pgsUrl = `https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=${req.query.text}&key=${pgsAuthKey}`
 
-    https.get(pgsUrl, (response) => {
-        console.log(response)
-        res.json(response)
-    })
+    axios(pgsUrl).then(response => {
+        console.log(response.data)
+        compdata = response.data
+    }).then(res.send(compdata))
 }) 
 
 app.get('/results', (req, res) => {
