@@ -62,6 +62,8 @@ app.get('/getDRI', function (req, res) {
     var compdata
     const pgsUrl = `https://pagespeedonline.googleapis.com/pagespeedonline/v5/runPagespeed?category=ACCESSIBILITY&category=PERFORMANCE&category=SEO&locale=pt&strategy=DESKTOP&url=${req.query.text}&prettyPrint=true&key=${pgsAuthKey}`
 
+    scrapeTags()
+
     axios(pgsUrl).then(response => {
         compdata = response.data
         res.send(response.data)
