@@ -4,7 +4,7 @@ const { Scraper, Root, OpenLinks } = require('nodejs-web-scraper');
 
 (async () => {
     const config = {
-        baseSiteUrl: `https://www.profesia.sk`,
+        baseSiteUrl: `https://www.firmen.wko.at`,
         startUrl: `https://www.profesia.sk/praca/`,
         removeStyleAndScriptTags: false//Telling the scraper NOT to remove style and script tags, cause i want it in my html files, for this example.        
     }
@@ -23,7 +23,7 @@ const { Scraper, Root, OpenLinks } = require('nodejs-web-scraper');
 
     const scraper = new Scraper(config);
 
-    const root = new Root({ pagination: { queryString: 'page_num', begin: 1, end: 100 } });
+    const root = new Root({});
 
     const jobAds = new OpenLinks('.list-row h2 a', { getPageHtml });//Opens every job ad, and calls a hook after every page is done.
 

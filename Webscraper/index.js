@@ -5,7 +5,8 @@ const express = require('express')
 const app = express() 
 const cors = require('cors')
 const pgsAuthKey = 'AIzaSyDCqSuQrMeDBvf-srs7SL4cyPL-4YvsCUA'
-const https = require('https')
+var childProcess = require('child_process').fork('index.js')
+const { response } = require('express')
 
 
 
@@ -22,7 +23,8 @@ app.get('/getDRI', function (req, res) {
     axios(pgsUrl).then(response => {
         console.log(response.data)
         compdata = response.data
-    }).then(res.send(compdata))
+        res.send(compdata)
+    })
 }) 
 
 app.get('/results', (req, res) => {
