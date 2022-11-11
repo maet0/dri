@@ -15,6 +15,10 @@
     }
 }
 
+.suggestionspace {
+    height: 80px;
+}
+
 .suggestion {
     display: flex;
     align-items: center;
@@ -78,5 +82,15 @@
     .selectionDisplay {
         display: flex;
         align-items: center;
+        max-width: 75%;
+    }
+}
+
+.invalid {
+    input {
+        border-bottom-color: red !important;
+    }
+    label {
+        color: red !important;
     }
 }

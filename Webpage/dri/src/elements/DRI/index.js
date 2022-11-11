@@ -38,6 +38,7 @@ const DRI = (props) => {
     axios.get(`http://localhost:8000/results?text=${enteredName}`)
       .then(response => {
         setCompanies(response.data)
+        setRemainingSuggestions(response.data.length - 3);
       }).finally(() => {
         setLoading(false)
         setScreen(2);
@@ -55,30 +56,48 @@ const DRI = (props) => {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [score, setScore] = useState(0);
-  const { width } = useWindowDimensions()
-  const [loading, setLoading] = useState(false)
-  const [companiesIndex, setCompaniesIndex] = useState(0)
+  const { width } = useWindowDimensions();
+  const [loading, setLoading] = useState(false);
+  const [companiesIndex, setCompaniesIndex] = useState(0);
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [validNameInput, setValidNameInput] = useState(true);
 
 
 
   const prepareSecondScreen = () => {
-    setLoading(true);
-    getCompanies()
-    setRemainingSuggestions(9);
+    if (enteredName.length < 3) {
+      setValidNameInput(false);
+    } else {
+      setValidNameInput(true);
+      setLoading(true);
+      getCompanies()
+      setRemainingSuggestions(9);
+
+    }
   }
 
   const loadMore = () => {
-    setRemainingSuggestions(old => old - 3);
+    setCompaniesIndex(old => old + 3);
+    setRemainingSuggestions(old => remainingSuggestions < 3 ? 0 : old - 3);
     setPreviousSuggestions(old => old + 3);
   }
 
   const loadPrevious = () => {
-    setRemainingSuggestions(old => old + 3);
+    if (previousSuggestions === companies.length - 1 && companies.length % 3 !== 0) {
+      setRemainingSuggestions(old => old + companies.length % 3);
+    } else {
+      setRemainingSuggestions(old => old + 3);
+    }
     setPreviousSuggestions(old => old - 3);
+    setCompaniesIndex(old => old - 3);
+
+
   }
 
   const setSelection = (index) => {
+
     setScreen(3);
+    setSelectedIndex(index);
   }
 
   const sendData = () => {
@@ -91,8 +110,15 @@ const DRI = (props) => {
     setScore(50);
   }
 
+  const backToFirstScreen = () => {
+    setScreen(1)
+    setPreviousSuggestions(0);
+    setRemainingSuggestions(0);
+    setCompanies([]);
+  }
+
   return (
-    <div className={styles.wrapper}>
+    <div className={styles.wrapper} id="anwendung">
       {loading ?
         <div>
           <h2 style={{ marginBottom: 20 }}>Einen kurzen Moment bitte...</h2>
@@ -108,8 +134,9 @@ const DRI = (props) => {
           />
         </div> :
         screen === 1 ?
-          <div>
-            <Eingabe label="Firmenname" value={enteredName} onChange={setEnteredName} />
+          <div className={validNameInput ? undefined : styles.invalid}>
+            {validNameInput ? undefined : <p style={{color: 'red'}}>Bitte geben Sie 3 oder mehr Zeichen ein.</p>}
+            <Eingabe label="Firmenname" value={enteredName} onFocus={() => setValidNameInput(true)} onChange={setEnteredName} />
             <div style={{ marginTop: 60, marginBottom: 40 }}>
               <Button onClick={prepareSecondScreen} text="Weiter" type="primary" />
             </div>
@@ -118,19 +145,28 @@ const DRI = (props) => {
           :
           screen === 2 ?
             <div>
-              <Eingabe label="Firmenname" style={{ marginBottom: 60 }} onFocus={() => setScreen(1)} value={enteredName} onChange={setEnteredName} />
+              <Eingabe label="Firmenname" style={{ marginBottom: 60 }} onFocus={() => backToFirstScreen()} value={enteredName} onChange={setEnteredName} />
               <div className={styles.suggestion} onClick={() => setSelection(companiesIndex)}>
                 <img src={Logo} alt="Logo _____" />
                 <p>{companies[companiesIndex].title}<br />{`${companies[companiesIndex].zip} ${companies[companiesIndex].city}`}</p>
               </div>
-              <div className={styles.suggestion} onClick={() => setSelection(companiesIndex + 1)}>
-                <img src={Logo} alt="Logo _____" />
-                <p>{companies[companiesIndex + 1].title}<br />{`${companies[companiesIndex + 1].zip} ${companies[companiesIndex + 1].city}`}</p>
-              </div>
-              <div className={styles.suggestion} onClick={() => setSelection(companiesIndex + 2)}>
-                <img src={Logo} alt="Logo _____" />
-                <p>{companies[companiesIndex + 2].title}<br />{`${companies[companiesIndex + 2].zip} ${companies[companiesIndex + 2].city}`}</p>
-              </div>
+              {companies[companiesIndex + 1] ?
+                <div className={styles.suggestion} onClick={() => setSelection(companiesIndex + 1)}>
+                  <img src={Logo} alt="Logo _____" />
+                  <p>{companies[companiesIndex + 1].title}<br />{`${companies[companiesIndex + 1].zip} ${companies[companiesIndex + 1].city}`}</p>
+                </div>
+                :
+                <div className={styles.suggestionspace}></div>
+              }
+              {companies[companiesIndex + 2] ?
+                <div className={styles.suggestion} onClick={() => setSelection(companiesIndex + 2)}>
+                  <img src={Logo} alt="Logo _____" />
+                  <p>{companies[companiesIndex + 2].title}<br />{`${companies[companiesIndex + 2].zip} ${companies[companiesIndex + 2].city}`}</p>
+                </div>
+                :
+                <div className={styles.suggestionspace}></div>
+              }
+              {remainingSuggestions <= 0 ? <p><b>Ist Ihr Unternehmen nicht dabei?</b><br/>Versuchen Sie, den vollen Namen Ihres Unternehmens einzugeben.<br/>Bitte beachten Sie, dass die Anwendung nur Unternehmen mit Sitz in Österreich anzeigen kann.</p> : undefined}
               <div className={styles.buttonbar}>
                 {previousSuggestions > 0 && <Button text='Vorherige laden' onClick={loadPrevious} type="tertiary" />}
                 {remainingSuggestions > 0 && <Button text={`Mehr laden (${remainingSuggestions})`} onClick={loadMore} type="tertiary" />}
@@ -142,7 +178,7 @@ const DRI = (props) => {
                   <h1>Fast fertig!</h1>
                   <div className={styles.selectionDisplay}>
                     <img src={Logo} alt="Logo _____" />
-                    <p>spectory OG</p>
+                    <p>{companies[selectedIndex].title}</p>
                   </div>
                 </div>
                 <p>Wir würden uns freuen, wenn Sie uns Ihre Kontaktdaten hinterlassen.
