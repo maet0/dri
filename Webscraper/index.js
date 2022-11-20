@@ -64,8 +64,8 @@ app.get('/getDRI', function (req, res) {
     let user = JSON.parse(req.query.user);
     let company = JSON.parse(req.query.company);
 
-    // console.log(company);
-    // console.log(user);
+    console.log(company);
+    console.log(user);
 
     if (company.website) {
         var compdata

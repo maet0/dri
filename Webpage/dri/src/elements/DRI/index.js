@@ -159,10 +159,11 @@ const DRI = (props) => {
           screen === 2 ?
             <div>
               <Eingabe label="Firmenname" style={{ marginBottom: 60 }} onFocus={() => backToFirstScreen()} value={enteredName} onChange={setEnteredName} />
-              <div className={styles.suggestion} onClick={() => setSelection(companiesIndex)}>
+              {companies[companiesIndex] ? <div className={styles.suggestion} onClick={() => setSelection(companiesIndex)}>
                 <img src={Logo} alt={`Logo ${companies[companiesIndex].title}`} />
                 <p>{companies[companiesIndex].title}<br />{`${companies[companiesIndex].zip} ${companies[companiesIndex].city}`}</p>
               </div>
+              : <p><b>Leider konnten wir keine Firma mit dem gesuchten Namen finden.</b><br/>Versuchen Sie den vollen Namen Ihres Unternehmens einzugeben.<br />Bitte beachten Sie, dass die Anwendung nur Unternehmen mit Sitz in Österreich anzeigen kann.</p>}
               {companies[companiesIndex + 1] ?
                 <div className={styles.suggestion} onClick={() => setSelection(companiesIndex + 1)}>
                   <img src={Logo} alt={`Logo ${companies[companiesIndex + 1].title}`} />
@@ -179,7 +180,7 @@ const DRI = (props) => {
                 :
                 <div className={styles.suggestionspace}></div>
               }
-              {remainingSuggestions <= 0 ? <p><b>Ist Ihr Unternehmen nicht dabei?</b><br />Versuchen Sie den vollen Namen Ihres Unternehmens einzugeben.<br />Bitte beachten Sie, dass die Anwendung nur Unternehmen mit Sitz in Österreich anzeigen kann.</p> : undefined}
+              {remainingSuggestions <= 0 && companies[companiesIndex] ? <p><b>Ist Ihr Unternehmen nicht dabei?</b><br />Versuchen Sie den vollen Namen Ihres Unternehmens einzugeben.<br />Bitte beachten Sie, dass die Anwendung nur Unternehmen mit Sitz in Österreich anzeigen kann.</p> : undefined}
               <div className={styles.buttonbar}>
                 {previousSuggestions > 0 && <Button text='Vorherige laden' onClick={loadPrevious} type="tertiary" />}
                 {remainingSuggestions > 0 && <Button text={`Mehr laden (${remainingSuggestions})`} onClick={loadMore} type="tertiary" />}
