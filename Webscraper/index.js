@@ -88,6 +88,8 @@ app.get('/getDRI', function (req, res) {
             $('.yuRUbf', html).each(() => {
                 console.log($(this).find('a').attr('href'));
             })
+        }).finally(() => {
+            res.send(200);
         })
     }
 })

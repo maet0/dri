@@ -107,7 +107,7 @@ const DRI = (props) => {
       email: email,
       phone: phone
     });
-
+    setScreen(4);
     axios.get(`http://localhost:8000/getDRI?user=${user}&company=${JSON.stringify(companies[selectedIndex])}`)
       .then(response => {
         console.log(response)
