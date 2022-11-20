@@ -37,7 +37,7 @@ const DRI = (props) => {
   const getCompanies = () => {
     axios.get(`http://localhost:8000/results?text=${enteredName}`)
       .then(response => {
-        setCompanies(response.data)
+        setCompanies(response.data);
         setRemainingSuggestions(response.data.length - 3);
       }).finally(() => {
         setLoading(false)
@@ -101,8 +101,21 @@ const DRI = (props) => {
   }
 
   const sendData = () => {
-    // Send data to server
-    getResults()
+    let user = JSON.stringify({
+      surname: surname,
+      last_name: name,
+      email: email,
+      phone: phone
+    });
+
+    axios.get(`http://localhost:8000/getDRI?user=${user}&company=${JSON.stringify(companies[selectedIndex])}`)
+      .then(response => {
+        console.log(response)
+      }).finally(() => {
+        getResults()
+
+
+      });
   }
 
   const getResults = () => {
@@ -135,7 +148,7 @@ const DRI = (props) => {
         </div> :
         screen === 1 ?
           <div className={validNameInput ? undefined : styles.invalid}>
-            {validNameInput ? undefined : <p style={{color: 'red'}}>Bitte geben Sie 3 oder mehr Zeichen ein.</p>}
+            {validNameInput ? undefined : <p style={{ color: 'red' }}>Bitte geben Sie 3 oder mehr Zeichen ein.</p>}
             <Eingabe label="Firmenname" value={enteredName} onFocus={() => setValidNameInput(true)} onChange={setEnteredName} />
             <div style={{ marginTop: 60, marginBottom: 40 }}>
               <Button onClick={prepareSecondScreen} text="Weiter" type="primary" />
@@ -147,12 +160,12 @@ const DRI = (props) => {
             <div>
               <Eingabe label="Firmenname" style={{ marginBottom: 60 }} onFocus={() => backToFirstScreen()} value={enteredName} onChange={setEnteredName} />
               <div className={styles.suggestion} onClick={() => setSelection(companiesIndex)}>
-                <img src={Logo} alt="Logo _____" />
+                <img src={Logo} alt={`Logo ${companies[companiesIndex].title}`} />
                 <p>{companies[companiesIndex].title}<br />{`${companies[companiesIndex].zip} ${companies[companiesIndex].city}`}</p>
               </div>
               {companies[companiesIndex + 1] ?
                 <div className={styles.suggestion} onClick={() => setSelection(companiesIndex + 1)}>
-                  <img src={Logo} alt="Logo _____" />
+                  <img src={Logo} alt={`Logo ${companies[companiesIndex + 1].title}`} />
                   <p>{companies[companiesIndex + 1].title}<br />{`${companies[companiesIndex + 1].zip} ${companies[companiesIndex + 1].city}`}</p>
                 </div>
                 :
@@ -160,13 +173,13 @@ const DRI = (props) => {
               }
               {companies[companiesIndex + 2] ?
                 <div className={styles.suggestion} onClick={() => setSelection(companiesIndex + 2)}>
-                  <img src={Logo} alt="Logo _____" />
+                  <img src={Logo} alt={`Logo ${companies[companiesIndex + 2].title}`} />
                   <p>{companies[companiesIndex + 2].title}<br />{`${companies[companiesIndex + 2].zip} ${companies[companiesIndex + 2].city}`}</p>
                 </div>
                 :
                 <div className={styles.suggestionspace}></div>
               }
-              {remainingSuggestions <= 0 ? <p><b>Ist Ihr Unternehmen nicht dabei?</b><br/>Versuchen Sie, den vollen Namen Ihres Unternehmens einzugeben.<br/>Bitte beachten Sie, dass die Anwendung nur Unternehmen mit Sitz in Österreich anzeigen kann.</p> : undefined}
+              {remainingSuggestions <= 0 ? <p><b>Ist Ihr Unternehmen nicht dabei?</b><br />Versuchen Sie den vollen Namen Ihres Unternehmens einzugeben.<br />Bitte beachten Sie, dass die Anwendung nur Unternehmen mit Sitz in Österreich anzeigen kann.</p> : undefined}
               <div className={styles.buttonbar}>
                 {previousSuggestions > 0 && <Button text='Vorherige laden' onClick={loadPrevious} type="tertiary" />}
                 {remainingSuggestions > 0 && <Button text={`Mehr laden (${remainingSuggestions})`} onClick={loadMore} type="tertiary" />}

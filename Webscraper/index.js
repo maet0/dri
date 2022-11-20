@@ -59,8 +59,14 @@ app.get('/', function (req, res) {
 })
 
 app.get('/getDRI', function (req, res) {
+
+    // User und Company Objekte wurden als String verschickt -> in JSON parsen
     let user = JSON.parse(req.query.user);
     let company = JSON.parse(req.query.company);
+
+    // console.log(company);
+    // console.log(user);
+
     if (company.website) {
         var compdata
         const pgsUrl = `https://pagespeedonline.googleapis.com/pagespeedonline/v5/runPagespeed?category=ACCESSIBILITY&category=PERFORMANCE&category=SEO&locale=pt&strategy=DESKTOP&url=${company.website}&prettyPrint=true&key=${pgsAuthKey}`
@@ -75,7 +81,14 @@ app.get('/getDRI', function (req, res) {
             console.log(response.data.lighthouseResult.categories.seo.score + " : SEO Rating")
         })
     } else {
-        // Auf Google nach Website suchen
+        axios(`https://www.google.com/search?q=${company.title}`).then(res => {
+            const html = res.data;
+            const $ = cheerio.load(html);
+            // ToDo: Website finden
+            $('.yuRUbf', html).each(() => {
+                console.log($(this).find('a').attr('href'));
+            })
+        })
     }
 })
 
@@ -91,14 +104,13 @@ app.get('/results', (req, res) => {
             const street = $(this).find('.street').text()
             const zip = $(this).find('.zip').text()?.split(' ')[0]
             const city = $(this).find('.locality').text()
-            const url = $(this).find('a').attr('href')
             const website = $(this).find('[itemprop=url]').text()
 
-            companies.push({ title, street, zip, city, website, url })
+            companies.push({ title, street, zip, city, website })
 
             driUrl = website
         })
-        res.json(companies)
+        res.json(companies);
     }).catch(err => console.log(err))
 })
 
