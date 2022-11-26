@@ -8,6 +8,7 @@ import { Puff } from 'react-loader-spinner'
 import ReactSpeedometer, { CustomSegmentLabelPosition } from "react-d3-speedometer"
 import useWindowDimensions, { mobile_breakpoint } from "../../helpers/WindowService"
 import axios from "axios"
+const Crawler = require('node-html-crawler')
 
 
 
@@ -107,6 +108,7 @@ const DRI = (props) => {
       email: email,
       phone: phone
     });
+
     setScreen(4);
     axios.get(`http://localhost:8000/getDRI?user=${user}&company=${JSON.stringify(companies[selectedIndex])}`)
       .then(response => {
@@ -115,6 +117,16 @@ const DRI = (props) => {
         getResults()
 
 
+      });
+  }
+
+  const sendDataWithoutUser = () =>  {
+    setScreen(4);
+    axios.get(`http://localhost:8000/getDRI?&company=${JSON.stringify(companies[selectedIndex])}`)
+      .then(response => {
+        console.log(response)
+      }).finally(() => {
+        getResults()
       });
   }
 
