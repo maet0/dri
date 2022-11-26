@@ -12,7 +12,7 @@ const Home = () => {
   const { width } = useWindowDimensions()
 
   return (
-    <Layout path="/">
+    <Layout title="Digital Recruiting Index by spectory" path="/">
       <div className='container' style={{ marginBottom: 100 }}>
         <div className='col2'></div>
         <div className='col8' style={{ textAlign: 'center' }}>

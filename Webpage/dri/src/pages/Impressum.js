@@ -3,7 +3,7 @@ import Layout from './layout';
 import Button from '../elements/Button';
 
 const Impressum = () => (
-  <Layout path="/impressum">
+  <Layout title="Impressum | DRI by spectory" path="/impressum">
     <div className='container'>
       <div className='col8'>
         <Button text="zurück" destination="/" type="tertiary" />

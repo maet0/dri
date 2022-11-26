@@ -8,7 +8,6 @@ import { Puff } from 'react-loader-spinner'
 import ReactSpeedometer, { CustomSegmentLabelPosition } from "react-d3-speedometer"
 import useWindowDimensions, { mobile_breakpoint } from "../../helpers/WindowService"
 import axios from "axios"
-const Crawler = require('node-html-crawler')
 
 
 
