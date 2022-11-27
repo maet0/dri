@@ -8,7 +8,10 @@ import { Puff } from 'react-loader-spinner'
 import ReactSpeedometer, { CustomSegmentLabelPosition } from "react-d3-speedometer"
 import useWindowDimensions, { mobile_breakpoint } from "../../helpers/WindowService"
 import axios from "axios"
+<<<<<<< HEAD
 
+=======
+>>>>>>> dddf1b0d00937165f20e1147e8058be476a1bb97
 
 
 

@@ -3,7 +3,7 @@ import Button from '../elements/Button';
 import Layout from './layout';
 
 const Datenschutz = () => (
-  <Layout path="/datenschutz">
+  <Layout title="Datenschutz | DRI by spectory" path="/datenschutz">
     <div className='container'>
       <div className='col8'>
       <Button text="zurück" destination="/" type="tertiary" />
