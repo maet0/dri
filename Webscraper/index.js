@@ -9,47 +9,23 @@ const sanitize = require('sanitize-filename');//Using this npm module to sanitiz
 const fs = require('fs');
 const { Scraper, Root, OpenLinks } = require('nodejs-web-scraper');
 const Crawler = require('node-html-crawler');
-const { allowedNodeEnvironmentFlags } = require('process')
 var driUrl;
+const request = require('request');
 
 
-function runTagScraper() {
-    var invoked = false
-    var process = childProcess
-
-    // listen for errors
-    process.on('error', function (err) {
-        if (invoked) return;
-        invoked = true
-        callback(err)
-    })
-}
-
-// Scrape for Google/Facebook/LinkedIn Tags
-function scrapeTags() {
-
-    (async () => {
-        console.log(driUrl)
-        const config = {
-            baseSiteUrl: `${driUrl}`,
-            startUrl: `${driUrl}`,
-            removeStyleAndScriptTags: false //Telling the scraper NOT to remove style and script tags
-        }
-
-        const getPageHtml = (html, pageAddress) => {//Saving the HTML file, using the page address as a name.
-
-            if (!directoryExists) {
-                fs.mkdirSync('./html');
-                directoryExists = true;
-            }
-            const name = sanitize(pageAddress)
-            fs.writeFile(`./html/${name}.html`, html, () => { })
-        }
-
-        const scraper = new Scraper(config);
-        const root = new Root({});
-        await scraper.scrape(root);
-    })()
+function runTagScraper(toScrape) {
+    console.log(toScrape);
+    request(toScrape, function (err,res,body){
+    if(err){
+        console.log(err, "Error occurred while fetching html")
+    }
+    else 
+    {
+        console.log(body);
+        let $ = cheerio.load(body);
+        $('')
+    }
+});
 
 }
 
@@ -72,7 +48,7 @@ app.get('/getDRI', function (req, res) {
         var compdata
         const pgsUrl = `https://pagespeedonline.googleapis.com/pagespeedonline/v5/runPagespeed?category=ACCESSIBILITY&category=PERFORMANCE&category=SEO&locale=pt&strategy=DESKTOP&url=${company.website}&prettyPrint=true&key=${pgsAuthKey}`
         var karriereseite = false;
-        // scrapeTags(karriereseite)
+        const tags = runTagScraper(company.website)
 
         axios(pgsUrl).then(response => {
             compdata = response.data
@@ -95,21 +71,6 @@ app.get('/getDRI', function (req, res) {
     }
 })
 
-app.get('/getTags', (req,res) =>  {
-    const crawler = new Crawler({
-        protocol: 'https:', // default 'http:'
-        domain: 'safonov.pro', // default 'example.com'
-        limitForConnections: 15, // number of simultaneous connections, default 10
-        limitForRedirects: 5, // possible number of redirects, default 5
-        timeout: 500, // number of milliseconds between pending connection, default 300
-        headers: {
-          'User-Agent': 'Mozilla/5.0', // default header
-          'Cookie': 'name=value', // advanced header
-        },
-        urlFilter: (url) => true, // default filter
-    });
-    
-})
 
 app.get('/results', (req, res) => {
     let querytext = req.query?.text;
