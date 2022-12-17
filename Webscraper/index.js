@@ -11,7 +11,38 @@ const { Scraper, Root, OpenLinks } = require('nodejs-web-scraper');
 const Crawler = require('node-html-crawler');
 var driUrl;
 const request = require('request');
+var mysql = require('mysql');
 
+var connection = mysql.createConnection({
+    host: 'localhost',
+    user: 'k005779_24@localhost',
+    password: '5hst8E4ZAWr5',
+});
+
+  function setDataWithoutUser (data)  {
+    connection.connect(function(err) {
+        if (err) throw err;
+        console.log('Connected to the MySQL database');
+      });
+      
+}
+
+ function setDataWithUser({firstname, lastname, email, telnr}){
+
+
+    connection.connect(function(err) {
+        if (err) throw err;
+        console.log('Connected to the MySQL database');
+      });
+      
+connection.query(`INSERT INTO contact (first_name, last_name, email, telnr) VALUES (${mysql.escape(firstname)},${mysql.escape(lastname)},${mysql.escape(email)},${mysql.escape(telnr)})`, (error, results, fields) => {
+  if(error) throw error;
+  console.log("Results: "+ results);
+  console.log("Fields: " +fields);
+});
+
+      connection.end();
+}
 
 function runTagScraper(toScrape) {
     console.log(toScrape);
@@ -21,9 +52,9 @@ function runTagScraper(toScrape) {
     }
     else 
     {
-        console.log(body);
+        /** console.log(body);
         let $ = cheerio.load(body);
-        $('')
+        $('') */
     }
 });
 
@@ -39,10 +70,15 @@ app.get('/getDRI', function (req, res) {
 
     // User und Company Objekte wurden als String verschickt -> in JSON parsen
     let user = JSON.parse(req.query.user);
-    let company = JSON.parse(req.query.company);
+    let company = JSON.parse(req.query.company)
+    if(user) {
+        setDataWithUser(user.surname, user.last_name, user.email, user.phone)
+    }
 
     console.log(company);
     console.log(user);
+
+    
 
     if (company.website) {
         var compdata
