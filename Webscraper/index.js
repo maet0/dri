@@ -14,9 +14,9 @@ const request = require('request');
 var mysql = require('mysql');
 
 var connection = mysql.createConnection({
+    database: 'k005779_24_dri',
     host: 'localhost',
-    user: 'k005779_24@localhost',
-    password: '5hst8E4ZAWr5',
+    user: 'root'
 });
 
   function setDataWithoutUser (data)  {
@@ -27,7 +27,8 @@ var connection = mysql.createConnection({
       
 }
 
- function setDataWithUser({firstname, lastname, email, telnr}){
+ function setDataWithUser(props){
+    console.log("First name", props);
 
 
     connection.connect(function(err) {
@@ -35,7 +36,9 @@ var connection = mysql.createConnection({
         console.log('Connected to the MySQL database');
       });
       
-connection.query(`INSERT INTO contact (first_name, last_name, email, telnr) VALUES (${mysql.escape(firstname)},${mysql.escape(lastname)},${mysql.escape(email)},${mysql.escape(telnr)})`, (error, results, fields) => {
+// Create the INSERT statement
+const sql = "INSERT INTO contact (first_name, last_name, email, telnr) VALUES (?,?,?,?)";
+connection.query(sql, [props.surname, props.last_name, props.email, props.phone],(error, results, fields) => {
   if(error) throw error;
   console.log("Results: "+ results);
   console.log("Fields: " +fields);
@@ -71,8 +74,9 @@ app.get('/getDRI', function (req, res) {
     // User und Company Objekte wurden als String verschickt -> in JSON parsen
     let user = JSON.parse(req.query.user);
     let company = JSON.parse(req.query.company)
+    console.log("User", user.surname);
     if(user) {
-        setDataWithUser(user.surname, user.last_name, user.email, user.phone)
+        setDataWithUser(user)
     }
 
     console.log(company);
