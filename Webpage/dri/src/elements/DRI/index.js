@@ -109,10 +109,9 @@ const DRI = (props) => {
     setScreen(4);
     axios.get(`http://localhost:8000/getDRI?user=${user}&company=${JSON.stringify(companies[selectedIndex])}`)
       .then(response => {
-        console.log(response)
+        getResults(response)
       }).finally(() => {
-        getResults()
-
+        console.log('furz1')
 
       });
   }
@@ -121,15 +120,17 @@ const DRI = (props) => {
     setScreen(4);
     axios.get(`http://localhost:8000/getDRI?&company=${JSON.stringify(companies[selectedIndex])}`)
       .then(response => {
-        console.log(response)
-      }).finally(() => {
-        getResults()
+        getResults(response)
+            }).finally(() => {
+              console.log('furz2')
       });
   }
 
-  const getResults = () => {
+  const getResults = (res) => {
     setScreen(5);
-    setScore(50);
+    console.log(res);
+    setScore(Math.round(res.data.score));
+    console.log(res.data.file);
   }
 
   const backToFirstScreen = () => {
@@ -250,7 +251,7 @@ const DRI = (props) => {
                       Wenn Sie Interesse am Ausbau dieser Bereiche haben, laden wir Sie gerne auf ein Beratungsgespräch ein.<br /><br />
                       Wir haben eine PDF mit genaueren Ergebnissen für Sie erstellt. Wenn Sie diese sehen möchten, drücken Sie auf den untenstehenden Button.</p>
                     <div className={styles.buttonbar}>
-                      <Button style={{ marginBottom: width < mobile_breakpoint ? 15 : 0 }} text="Ergebnis PDF herunterladen" type="primary" onClick={() => alert('code download here')} />
+                      <Button style={{ marginBottom: width < mobile_breakpoint ? 15 : 0 }} text="Ergebnis PDF herunterladen" type="primary" destinationabs="C:\Users\hymer\OneDrive\Desktop\DRI\dri\Webscraper\pdfgenerator\pdf_archive\spectory-og-spectory.pdf" />
                       <Button style={{ marginBottom: width < mobile_breakpoint ? 15 : 0 }} text="Gespräch vereinbaren" type="secondary" destination="#calendly" />
                       <Button style={{ marginBottom: width < mobile_breakpoint ? 25 : 0 }} text="spectory Homepage" type="secondary" destination="https://www.spectory.at" />
                     </div>

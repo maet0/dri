@@ -1,33 +1,42 @@
-const sanitize = require('sanitize-filename');//Using this npm module to sanitize file names.
+const PORT = 8000
+const axios = require('axios')
+const cheerio = require('cheerio')
+const express = require('express')
+const app = express()
+const cors = require('cors')
+const pgsAuthKey = 'AIzaSyDCqSuQrMeDBvf-srs7SL4cyPL-4YvsCUA'
 const fs = require('fs');
-const { Scraper, Root, OpenLinks } = require('nodejs-web-scraper');
+var driUrl;
+const request = require('request');
+var mysql = require('mysql');
+const generateReport = require('./pdfgenerator/generatepdf');
+const { parse } = require('node-html-parser');
+var html1;
+/* 
+getGoogleImage("Spectory OG Waltherstraße")
 
-(async () => {
-    const config = {
-        baseSiteUrl: `https://www.firmen.wko.at`,
-        startUrl: `https://www.profesia.sk/praca/`,
-        removeStyleAndScriptTags: false//Telling the scraper NOT to remove style and script tags, cause i want it in my html files, for this example.        
-    }
+async function getGoogleImage(searchTerm) {
+    console.log("searching for "+searchTerm)
+    const response = await axios.get(`https://www.google.com/search?q=${searchTerm}&tbm=isch`)
+        const $ = cheerio.load(response.data);
+        return $('img').first().attr('src');
+}
+ */
+gaga("Ligensa")
 
-    let directoryExists;
-
-    const getPageHtml = (html, pageAddress) => {//Saving the HTML file, using the page address as a name.
-
-        if(!directoryExists){
-            fs.mkdirSync('./html');
-            directoryExists = true;
-        }
-        const name = sanitize(pageAddress)
-        fs.writeFile(`./html/${name}.html`, html, () => { })
-    }
-
-    const scraper = new Scraper(config);
-
-    const root = new Root({});
-
-    const jobAds = new OpenLinks('.list-row h2 a', { getPageHtml });//Opens every job ad, and calls a hook after every page is done.
-
-    root.addOperation(jobAds);
-
-    await scraper.scrape(root);
-})() 
+function gaga(company) {
+    console.log(company);
+    axios(`https://www.google.com/search?q=${company}`)
+        .then(res => {
+            html1 = parse(res.data)
+            console.log(html1.querySelector('.egMi0 a').rawAttributes)
+            const html = res.data;
+            const $ = cheerio.load(html);
+            $('.yuRUbf').each(() => {
+                console.log("searching");
+                console.log($(this).find('a'));
+                // Hier können Sie das gefundene Ergebnis verarbeiten und 
+                // den Rest des Codes ausführen, wenn es erforderlich ist
+            });
+        })
+}

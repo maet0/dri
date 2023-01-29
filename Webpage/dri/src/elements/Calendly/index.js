@@ -31,13 +31,13 @@ export default class Calendly extends React.Component {
 
     render() {
 
-        return <InlineWidget
+        return <div id='calendly'><InlineWidget
             styles={{
                 height: this.state.isMobile ? 1090 : 650,
                 minWidth: 320
             }}
             url="https://calendly.com/spectory/kickoff?hide_gdpr_banner=1&primary_color=2dade4"
-        />
+        /></div>
 
     }
 

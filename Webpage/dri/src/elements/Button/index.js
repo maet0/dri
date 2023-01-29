@@ -32,6 +32,20 @@ const Button = (props) => {
     );
   }
 
+  if (props.destinationabs !== undefined) {
+      return (
+        <div className={styles.buttonWrapper}>
+          <a
+            href={props.destinationabs}
+            className={buttonStyles}
+            style={addStyle}
+          >
+            <p>{props.text}</p>
+          </a>
+        </div>
+      )
+  }
+
   if (props.destination !== undefined) {
     if (props.destination.startsWith('http') || props.destination.startsWith('www')) {
       return (

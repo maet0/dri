@@ -5,42 +5,31 @@ const express = require('express')
 const app = express()
 const cors = require('cors')
 const pgsAuthKey = 'AIzaSyDCqSuQrMeDBvf-srs7SL4cyPL-4YvsCUA'
-const sanitize = require('sanitize-filename');//Using this npm module to sanitize file names.
 const fs = require('fs');
-const { Scraper, Root, OpenLinks } = require('nodejs-web-scraper');
-const Crawler = require('node-html-crawler');
 var driUrl;
 const request = require('request');
 var mysql = require('mysql');
+const generateReport = require('./pdfgenerator/generatepdf');
+const {parse} = require('node-html-parser');
+var html1;
 
-
-
-async function crawlGoogleImage(searchTerm) {
-    const axios = require('axios');
-    const cheerio = require('cheerio');
-    const searchUrl = `https://www.google.com/search?q=${searchTerm}&tbm=isch`;
-    const response = await axios.get(searchUrl);
-    const $ = cheerio.load(response.data);
-    const firstImage = $('img').first();
-    return firstImage.attr('src');
-  }
 
 function parseHtmlBody(htmlBody) {
     const { JSDOM } = require('jsdom');
     const dom = new JSDOM(htmlBody);
     const document = dom.window.document;
     return document.documentElement.innerHTML;
-  }
+}
 
-const searchString = (input, search) => {
+function searchString(input, search) {
     if (input.indexOf(search) !== -1) {
-      // If the search string is found, return true
-      return true;
+        // If the search string is found, return true
+        return true;
     } else {
-      // If the search string is not found, return false
-      return false;
+        // If the search string is not found, return false
+        return false;
     }
-  }
+}
 
 var connection = mysql.createConnection({
     database: 'k005779_24_dri',
@@ -48,68 +37,71 @@ var connection = mysql.createConnection({
     user: 'root'
 });
 
-  function setDataWithoutUser (data)  {
-    connection.connect(function(err) {
+function setDataWithoutUser(data) {
+    connection.connect(function (err) {
         if (err) throw err;
         console.log('Connected to the MySQL database');
-      });
-      
+    });
+
 }
 
- function setDataWithUser(props){
+function setDataWithUser(props) {
     console.log("First name", props);
 
 
-    connection.connect(function(err) {
+    connection.connect(function (err) {
         if (err) throw err;
         console.log('Connected to the MySQL database');
-      });
-      
-// Create the INSERT statement
-const sql = "INSERT INTO contact (first_name, last_name, email, telnr) VALUES (?,?,?,?)";
-connection.query(sql, [props.surname, props.last_name, props.email, props.phone],(error, results, fields) => {
-  if(error) throw error;
+    });
 
-});
+    // Create the INSERT statement
+    const sql = "INSERT INTO contact (first_name, last_name, email, telnr) VALUES (?,?,?,?)";
+    connection.query(sql, [props.surname, props.last_name, props.email, props.phone], (error, results, fields) => {
+        if (error) throw error;
 
-      connection.end();
+    });
+
+    connection.end();
 }
 
-    function runTagScraper(toScrape) {
-    var score = 0;
-    console.log(toScrape);
-    request(toScrape, function (err,res,body){
-    if(err){
-        console.log(err, "Error occurred while fetching html")
-    }
-    else 
-    {
+function runTagScraper(toScrape) {
+    try {
+        const response = request(toScrape);
+        const inputString = parseHtmlBody(response.body);
+
         const GTSearch = 'https://www.googletagmanager.com/gtm.js';
         const LISearch = 'https://snap.licdn.com/li.lms-analytics/insight.min.js';
         const FBSearch = 'https://connect.facebook.net';
-        const inputString = parseHtmlBody(body);
+
         const isGT = searchString(inputString, GTSearch);
         const isLI = searchString(inputString, LISearch);
         const isFB = searchString(inputString, FBSearch);
 
-        console.log('isGT', isGT);
-
-        if(isGT){
+        let score = 0;
+        if (isGT) {
             score += 1;
         }
         if (isLI) {
             score += 1;
-        } 
+        }
         if (isFB) {
             score += 1;
         }
-        console.log(score);
+
+        const returnObj = {
+            isGT: isGT,
+            isFB: isFB,
+            isLI: isLI,
+            score: score,
+        };
+
+        console.log("returnObj", returnObj)
+        return returnObj;
+    } catch (error) {
+        console.error(error, 'Error occurred while fetching html');
     }
-
-});
-return score; 
-
 }
+
 
 app.use(cors())
 
@@ -125,15 +117,88 @@ app.get('/getDRI', function (req, res) {
     let user = JSON.parse(req.query.user);
     let company = JSON.parse(req.query.company)
     console.log("User", user.surname);
-    if(user) {
+    /* if (user) {
         setDataWithUser(user)
-    }
+    } */
 
-    if (company.website) {
+    if (company.website == null || company.website == "" || company.website == " ") {
+        console.log(company.title);
+        axios(`https://www.google.com/search?q=${company.title}`)
+          .then(res => {
+            html1 = parse(res.data)
+            const website = html1.querySelector('.egMi0 a').rawAttributes.href.substring(7)
+            console.log(website)
+            const html = res.data;
+            const $ = cheerio.load(html);
+            var search = company.title + " " + company.street
+            console.log(getGoogleImage(search))
+            var compdata;
+            const pgsUrl = `https://pagespeedonline.googleapis.com/pagespeedonline/v5/runPagespeed?category=ACCESSIBILITY&category=PERFORMANCE&category=SEO&locale=pt&strategy=DESKTOP&url=${website}&prettyPrint=true&key=${pgsAuthKey}`
+            var karriereseite = false;
+            let pathToPDF;
+            var tagscore = runTagScraper(website)
+            let data;
+    
+            axios(pgsUrl).then(response => {
+                compdata = response.data
+                console.log(response.data.lighthouseResult.categories.performance.score + " : Performance")
+                console.log(response.data.lighthouseResult.categories.accessibility.score + " : Barrierefreiheit")
+                console.log(response.data.lighthouseResult.categories.seo.score + " : SEO Rating")
+                console.log(typeof JSON.parse(response.data.lighthouseResult.categories.performance.score));
+                totalDRI = totalDRI + +response.data.lighthouseResult.categories.performance.score * 25 +
+                    +response.data.lighthouseResult.categories.accessibility.score * 25 +
+                    +response.data.lighthouseResult.categories.seo.score * 25 + (tagscore.score * 10);
+                console.log("The following DRI was achieved: ", totalDRI);
+    
+                for (let i = 0; i < company.title.length; i++) {
+                    console.log(company.title.charCodeAt(i));
+                }
+                console.log("title", JSON.stringify(company.title, '\u001f'));
+                data = {
+                    name: company.title,
+                    url: company.website,
+                    person: {
+                        first_name: user.surname,
+                        last_name: user.last_name,
+                    },
+                    stats: {
+                        gtm: tagscore.isGT,
+                        linkedin_inisght_tag: tagscore.isLI,
+                        metapixel: tagscore.isFB,
+                        performance: response.data.lighthouseResult.categories.performance.score,
+                        seo: response.data.lighthouseResult.categories.seo.score,
+                        accessibility: response.data.lighthouseResult.categories.accessibility.score
+                    }
+                }
+    
+            })
+            .then(() => {
+                pathToPDF = generateReport(data);
+                console.log("PathToPDF IS NOW ", pathToPDF)
+                console.log("we lit 2   ")
+                console.log('Tagscore', tagscore)
+                res.statusCode = 200;
+                res.setHeader('Content-Type', 'application/json');
+                res.json({ score: totalDRI })
+
+            })
+          }).then(() => {
+            console.log("we lit 3   ")
+          })
+          .catch(err => {
+            console.error(err);
+          });
+        }
+        else 
+        {
+        var search = company.title + " " + company.street
+        console.log(getGoogleImage(search))
         var compdata
         const pgsUrl = `https://pagespeedonline.googleapis.com/pagespeedonline/v5/runPagespeed?category=ACCESSIBILITY&category=PERFORMANCE&category=SEO&locale=pt&strategy=DESKTOP&url=${company.website}&prettyPrint=true&key=${pgsAuthKey}`
         var karriereseite = false;
+        let pathToPDF;
         var tagscore = runTagScraper(company.website)
+
 
         axios(pgsUrl).then(response => {
             compdata = response.data
@@ -141,24 +206,45 @@ app.get('/getDRI', function (req, res) {
             console.log(response.data.lighthouseResult.categories.accessibility.score + " : Barrierefreiheit")
             console.log(response.data.lighthouseResult.categories.seo.score + " : SEO Rating")
             console.log(typeof JSON.parse(response.data.lighthouseResult.categories.performance.score));
-            console.log('Tagscore', tagscore)
-            totalDRI = totalDRI + +response.data.lighthouseResult.categories.performance.score * 25 + 
-                                    +response.data.lighthouseResult.categories.accessibility.score * 25 + 
-                                     +response.data.lighthouseResult.categories.seo.score * 25 + (tagscore * 10);
+            totalDRI = totalDRI + +response.data.lighthouseResult.categories.performance.score * 25 +
+                +response.data.lighthouseResult.categories.accessibility.score * 25 +
+                +response.data.lighthouseResult.categories.seo.score * 25 + (tagscore.score * 10);
             console.log("The following DRI was achieved: ", totalDRI);
-            res.send(JSON.stringify(totalDRI));
-        })
-    } else {
-        axios(`https://www.google.com/search?q=${company.title}`).then(res => {
-            const html = res.data;
-            const $ = cheerio.load(html);
-            // ToDo: Website finden
-            $('.yuRUbf', html).each(() => {
-                console.log($(this).find('a').attr('href'));
-            })
+
+            for (let i = 0; i < company.title.length; i++) {
+                console.log(company.title.charCodeAt(i));
+            }
+            console.log("title", JSON.stringify(company.title, '\u001f'));
+            const data = {
+                name: company.title,
+                url: company.website,
+                person: {
+                    first_name: user.surname,
+                    last_name: user.last_name,
+                },
+                stats: {
+                    gtm: tagscore.isGT,
+                    linkedin_inisght_tag: tagscore.isLI,
+                    metapixel: tagscore.isFB,
+                    performance: response.data.lighthouseResult.categories.performance.score,
+                    seo: response.data.lighthouseResult.categories.seo.score,
+                    accessibility: response.data.lighthouseResult.categories.accessibility.score
+                }
+            }
+            console.log('Tagscore', tagscore)
+
+            pathToPDF = generateReport(data);
+            console.log("PathToPDF IS NOW ", pathToPDF)
+
         }).finally(() => {
-            res.send(200);
-        })
+            console.log("we lit 1")
+           // fs.readFileSync(pathToPDF, (err, data) => {
+               // if (err) return;
+                res.statusCode = 200;
+                res.setHeader('Content-Type', 'application/json');
+                res.json({ score: totalDRI, file: pathToPDF })
+          //  })
+        }) 
     }
 })
 
@@ -176,7 +262,7 @@ app.get('/results', (req, res) => {
             const zip = $(this).find('.zip').text()?.split(' ')[0]
             const city = $(this).find('.locality').text()
             const website = $(this).find('[itemprop=url]').text()
-            
+
             companies.push({ title, street, zip, city, website })
 
             driUrl = website
@@ -184,5 +270,14 @@ app.get('/results', (req, res) => {
         res.json(companies);
     }).catch(err => console.log(err))
 })
+
+async function getGoogleImage(searchTerm) {
+    console.log("searching for "+searchTerm)
+    const response = await axios.get(`https://www.google.com/search?q=${searchTerm}&tbm=isch`)
+        const $ = cheerio.load(response.data);
+        return $('img').first().attr('src');
+
+
+}
 
 app.listen(PORT, () => console.log(`server running on PORT ${PORT}`))
