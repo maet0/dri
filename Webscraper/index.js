@@ -92,7 +92,7 @@ function runTagScraper(toScrape) {
             isGT: isGT,
             isFB: isFB,
             isLI: isLI,
-            score: score,
+            score: 0,
         };
 
         console.log("returnObj", returnObj)
@@ -109,7 +109,7 @@ app.get('/', function (req, res) {
     res.json('This is our DRI Webscraper')
 })
 
-app.get('/getDRI', function (req, res) {
+app.get('/getDRI', async function (req, respo) {
 
     var totalDRI = 0;
 
@@ -125,6 +125,7 @@ app.get('/getDRI', function (req, res) {
         console.log(company.title);
         axios(`https://www.google.com/search?q=${company.title}`)
           .then(res => {
+            
             html1 = parse(res.data)
             const website = html1.querySelector('.egMi0 a').rawAttributes.href.substring(7)
             console.log(website)
@@ -140,14 +141,15 @@ app.get('/getDRI', function (req, res) {
             let data;
     
             axios(pgsUrl).then(response => {
+                
                 compdata = response.data
                 console.log(response.data.lighthouseResult.categories.performance.score + " : Performance")
                 console.log(response.data.lighthouseResult.categories.accessibility.score + " : Barrierefreiheit")
                 console.log(response.data.lighthouseResult.categories.seo.score + " : SEO Rating")
                 console.log(typeof JSON.parse(response.data.lighthouseResult.categories.performance.score));
                 totalDRI = totalDRI + +response.data.lighthouseResult.categories.performance.score * 25 +
-                    +response.data.lighthouseResult.categories.accessibility.score * 25 +
-                    +response.data.lighthouseResult.categories.seo.score * 25 + (tagscore.score * 10);
+                    +response.data.lighthouseResult.categories.accessibility.score * 35 +
+                    +response.data.lighthouseResult.categories.seo.score * 30 + (tagscore.score * 10);
                 console.log("The following DRI was achieved: ", totalDRI);
     
                 for (let i = 0; i < company.title.length; i++) {
@@ -170,20 +172,16 @@ app.get('/getDRI', function (req, res) {
                         accessibility: response.data.lighthouseResult.categories.accessibility.score
                     }
                 }
-    
             })
-            .then(() => {
+            .finally(() => {
                 pathToPDF = generateReport(data);
                 console.log("PathToPDF IS NOW ", pathToPDF)
-                console.log("we lit 2   ")
+                console.log("Test 2")
                 console.log('Tagscore', tagscore)
-                res.statusCode = 200;
-                res.setHeader('Content-Type', 'application/json');
-                res.json({ score: totalDRI })
-
+                respo.statusCode = 200;
+                respo.setHeader('Content-Type', 'application/json');
+                respo.json({ score: totalDRI })
             })
-          }).then(() => {
-            console.log("we lit 3   ")
           })
           .catch(err => {
             console.error(err);
@@ -240,9 +238,9 @@ app.get('/getDRI', function (req, res) {
             console.log("we lit 1")
            // fs.readFileSync(pathToPDF, (err, data) => {
                // if (err) return;
-                res.statusCode = 200;
-                res.setHeader('Content-Type', 'application/json');
-                res.json({ score: totalDRI, file: pathToPDF })
+                respo.statusCode = 200;
+                respo.setHeader('Content-Type', 'application/json');
+                respo.json({ score: totalDRI, file: pathToPDF })
           //  })
         }) 
     }
